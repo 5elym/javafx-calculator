@@ -16,6 +16,14 @@ public class Token {
         this.value = 0.0;
     }
 
+    public TokenType getType() {
+        return this.type;
+    }
+
+    public double getValue() {
+        return this.value;
+    }
+
     @Override
     public String toString() {
         if (type == TokenType.NUMBER) {

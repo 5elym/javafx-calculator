@@ -1,21 +1,110 @@
+import java.util.ArrayList;
+import java.util.List;
+
 import Tokens.Token;
+import Tokens.TokenType;
 
 public class Lexer {
-    private final String input;
+    private final char[] input;
     private int position;
+    private List<Token> tokenList;
 
     public Lexer(String input) {
-        this.input = input;
+        this.input = input.toCharArray();
         this.position = 0;
+        this.tokenList = new ArrayList<Token>();
     }
 
-    // Your goal: Scan the string character by character, ignore spaces,
-    // and group characters into logical Tokens.
-    public Token getNextToken() {
-        // TODO: If end of string, return EOF Token
-        // TODO: Skip whitespaces
-        // TODO: If character is a digit, extract full number and return NUMBER Token
-        // TODO: If character is +, -, *, /, (, or ), return respective Token
-        return null;
+    /**
+     * Reads the next token from the input and advances the position.
+     * Handles numbers, operators, parentheses, and whitespace.
+     * 
+     * @return The next token in the input, or null if an invalid character is
+     *         found.
+     */
+    public Token getNextToken() throws RuntimeException {
+        if (position >= input.length)
+            return new Token(TokenType.EOF);
+
+        // Handle numbers
+        char character = input[position];
+        String numString = "";
+        while (Character.isDigit(character)) {
+            numString += character;
+            position++;
+            character = input[position];
+        }
+        if (numString != "")
+            return new Token(TokenType.NUMBER, Double.parseDouble(numString));
+
+        // Handle operators and parentheses
+        switch (character) {
+            case '+' -> {
+                position++;
+                return new Token(TokenType.PLUS);
+            }
+            case '-' -> {
+                position++;
+                return new Token(TokenType.MINUS);
+            }
+            case '*' -> {
+                position++;
+                return new Token(TokenType.MULTIPLY);
+            }
+            case '/' -> {
+                position++;
+                return new Token(TokenType.DIVIDE);
+            }
+            case '(' -> {
+                position++;
+                return new Token(TokenType.LPAREN);
+            }
+            case ')' -> {
+                position++;
+                return new Token(TokenType.RPAREN);
+            }
+            case ' ' -> {
+                position++;
+                return getNextToken();
+            }
+        }
+
+        throw new RuntimeException("Unexpected character: " + character);
+    }
+
+    /**
+     * Parses the entire input string and fills the token list with all tokens
+     * found.
+     * This method continues to call getNextToken until it reaches the end of the
+     * input (EOF).
+     */
+    public void parseInput() {
+        try {
+            Token token = getNextToken();
+            while (!token.getType().equals(TokenType.EOF)) {
+                tokenList.add(token);
+                token = getNextToken();
+            }
+        } catch (RuntimeException e) {
+            System.err.println("Error while parsing input! " + e.getMessage());
+            e.printStackTrace();
+        } catch (Exception e) {
+            System.err.println("Unexpected error! " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    public List<Token> getTokens() {
+        return tokenList;
+    }
+
+    public static void main(String[] args) {
+        String input = "3 + 5 * (2 - 8)";
+        Lexer lexer = new Lexer(input);
+        lexer.parseInput();
+        List<Token> tokens = lexer.getTokens();
+        for (Token token : tokens) {
+            System.out.println(token);
+        }
     }
 }
