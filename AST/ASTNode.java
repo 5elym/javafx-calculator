@@ -1,4 +1,5 @@
 package AST;
 
-public abstract class ASTNode {
+public abstract sealed class ASTNode permits BinaryNode, NumberNode {
+
 }

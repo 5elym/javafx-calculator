@@ -102,8 +102,8 @@ public class Lexer {
     }
 
     public static void main(String[] args) {
-        String input = "3 + 5 * (2 - 8)";
-        // String input = "3 + 4 * 2";
+        // String input = "3 + 5 * (2 - 8)";
+        String input = "3 + 4 * 2";
         Lexer lexer = new Lexer(input);
         lexer.parseInput();
         List<Token> tokens = lexer.getTokens();
@@ -111,11 +111,17 @@ public class Lexer {
             System.out.println(token);
         }
 
-        System.out.println("ALKJSDHJAKSHDKJASHDKSJA");
+        System.out.println("---------------------------------------------------");
 
         Parser parser = new Parser(tokens);
-        ASTNode ast = parser.parse();
+        ASTNode astRoot = parser.parse();
 
-        ASTPrinter.printTree(ast);
+        ASTPrinter.printTree(astRoot);
+
+        Evaluator evaluator = new Evaluator();
+
+        double result = evaluator.evaluate(astRoot);
+
+        System.out.println("RESULT: " + result);
     }
 }

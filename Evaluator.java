@@ -1,25 +1,27 @@
 import AST.*;
+import Tokens.TokenType;
 
 public class Evaluator {
 
-    // This method takes the root of your tree and recursively calculates the final
-    // double
+    // Potentiall add calculator variables and history here
+
     public double evaluate(ASTNode node) {
+        return switch (node) {
+            case NumberNode num -> num.value;
+            case BinaryNode bin -> evaluateBinaryNode(bin);
+        };
+    }
 
-        // Base case: If it's just a number, return the number.
-        if (node instanceof NumberNode) {
-            // TODO: Cast to NumberNode and return its value
-        }
+    private double evaluateBinaryNode(BinaryNode node) throws IllegalArgumentException {
+        double leftNum = evaluate(node.left);
+        double rightNum = evaluate(node.right);
 
-        // Recursive case: If it's a binary operation, evaluate the left side,
-        // evaluate the right side, and apply the operator.
-        if (node instanceof BinaryNode) {
-            // TODO: Cast to BinaryNode
-            // TODO: double leftVal = evaluate(binaryNode.left);
-            // TODO: double rightVal = evaluate(binaryNode.right);
-            // TODO: Check binaryNode.operator and return leftVal + rightVal, etc.
-        }
-
-        throw new RuntimeException("Unknown AST Node type");
+        return switch (node.operator) {
+            case TokenType.PLUS -> leftNum + rightNum;
+            case TokenType.MINUS -> leftNum - rightNum;
+            case TokenType.MULTIPLY -> leftNum * rightNum;
+            case TokenType.DIVIDE -> leftNum / rightNum;
+            default -> throw new IllegalArgumentException("Unknown operator: " + node.operator);
+        };
     }
 }

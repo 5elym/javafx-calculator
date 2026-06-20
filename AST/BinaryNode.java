@@ -3,7 +3,7 @@ package AST;
 import Tokens.TokenType;
 
 // A branch node: holds a math operator and the nodes on its left and right
-public class BinaryNode extends ASTNode {
+public final class BinaryNode extends ASTNode {
     public final ASTNode left;
     public final TokenType operator;
     public final ASTNode right;
