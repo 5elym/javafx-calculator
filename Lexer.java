@@ -1,6 +1,8 @@
 import java.util.ArrayList;
 import java.util.List;
 
+import AST.ASTNode;
+import AST.ASTPrinter;
 import Tokens.Token;
 import Tokens.TokenType;
 
@@ -28,14 +30,14 @@ public class Lexer {
 
         // Handle numbers
         char character = input[position];
-        String numString = "";
-        while (Character.isDigit(character)) {
-            numString += character;
-            position++;
-            character = input[position];
-        }
-        if (numString != "")
+        if (Character.isDigit(character)) {
+            String numString = "";
+            while (position < input.length && Character.isDigit(input[position])) {
+                numString += input[position];
+                position++;
+            }
             return new Token(TokenType.NUMBER, Double.parseDouble(numString));
+        }
 
         // Handle operators and parentheses
         switch (character) {
@@ -85,6 +87,7 @@ public class Lexer {
                 tokenList.add(token);
                 token = getNextToken();
             }
+            tokenList.add(token); // Add EOF token at the end
         } catch (RuntimeException e) {
             System.err.println("Error while parsing input! " + e.getMessage());
             e.printStackTrace();
@@ -100,11 +103,19 @@ public class Lexer {
 
     public static void main(String[] args) {
         String input = "3 + 5 * (2 - 8)";
+        // String input = "3 + 4 * 2";
         Lexer lexer = new Lexer(input);
         lexer.parseInput();
         List<Token> tokens = lexer.getTokens();
         for (Token token : tokens) {
             System.out.println(token);
         }
+
+        System.out.println("ALKJSDHJAKSHDKJASHDKSJA");
+
+        Parser parser = new Parser(tokens);
+        ASTNode ast = parser.parse();
+
+        ASTPrinter.printTree(ast);
     }
 }
