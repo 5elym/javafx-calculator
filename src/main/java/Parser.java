@@ -1,7 +1,5 @@
 import Tokens.*;
-
 import java.util.List;
-
 import AST.*;
 
 public class Parser {

@@ -1,5 +1,5 @@
 import AST.*;
-import Tokens.TokenType;
+import Tokens.*;
 
 public class Evaluator {
 
